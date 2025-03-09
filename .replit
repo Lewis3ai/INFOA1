@@ -1,6 +1,15 @@
-hidden=[".config"]
-modules = ["web:v2-20230623-0b7a606"]
+modules = ["python-3.10", "nix"]
+
+hidden = [".pythonlibs"]
+run = "flask run -h 0.0.0.0 -p 8080 --reload"
+
+[nix]
+channel = "stable-24_05"
 
 [deployment]
-publicDir = "/"
-deploymentTarget = "static"
+run = ["sh", "-c", "flask run -h 0.0.0.0 -p 8080 --reload"]
+deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 8080
+externalPort = 80
