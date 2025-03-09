@@ -22,26 +22,18 @@ def initialize_db():
         with open(csv_file_path, newline='', encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                # Handle the case where height_m might be empty
-                height_value = None
-                if row["height_m"] and row["height_m"].strip():
-                    try:
-                        height_value = float(row["height_m"])
-                    except ValueError:
-                        height_value = None
-
                 pokemon = Pokemon(
-                    id=int(row["pokedex_number"]),
+                    id=int(row["id"]),
                     name=row["name"],
                     attack=int(row["attack"]),
                     defense=int(row["defense"]),
                     hp=int(row["hp"]),
-                    height=height_value,
+                    height=int(row["height"]),
                     sp_attack=int(row["sp_attack"]),
                     sp_defense=int(row["sp_defense"]),
                     speed=int(row["speed"]),
                     type1=row["type1"],
-                    type2=row["type2"] if row["type2"] and row["type2"] != "0" else None
+                    type2=row["type2"] if row["type2"] else None
                 )
                 db.session.add(pokemon)
 
