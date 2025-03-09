@@ -23,17 +23,17 @@ def initialize_db():
             reader = csv.DictReader(csvfile)
             for row in reader:
                 pokemon = Pokemon(
-                    id=int(row["id"]),
+                    id=int(row["pokedex_number"]),
                     name=row["name"],
                     attack=int(row["attack"]),
                     defense=int(row["defense"]),
                     hp=int(row["hp"]),
-                    height=int(row["height"]),
+                    height=float(row["height_m"]),
                     sp_attack=int(row["sp_attack"]),
                     sp_defense=int(row["sp_defense"]),
                     speed=int(row["speed"]),
                     type1=row["type1"],
-                    type2=row["type2"] if row["type2"] else None
+                    type2=row["type2"] if row["type2"] and row["type2"] != "0" else None
                 )
                 db.session.add(pokemon)
 
