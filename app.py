@@ -1,7 +1,7 @@
 import csv
 import os
 from flask import Flask, jsonify
-from models import db, Pokemon
+from models import db, Pokemon, User, UserPokemon
 
 app = Flask(__name__)
 
