@@ -24,19 +24,26 @@ def initialize_db():
         csv_file_path = os.path.join(os.path.dirname(__file__), "pokemon.csv")
         with open(csv_file_path, newline='', encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile)
+
             for row in reader:
+                print("Row data:", row)  # Debugging line
+                
+                if "id" not in row:
+                    print("ERROR: 'id' key is missing from the CSV row:", row)
+                    continue  # Skip this row if "id" is missing
+
                 pokemon = Pokemon(
-                    id=int(row["id"]),
-                    name=row["name"],
-                    attack=int(row["attack"]),
-                    defense=int(row["defense"]),
-                    hp=int(row["hp"]),
-                    height=int(row["height"]),
-                    sp_attack=int(row["sp_attack"]),
-                    sp_defense=int(row["sp_defense"]),
-                    speed=int(row["speed"]),
-                    type1=row["type1"],
-                    type2=row["type2"] if row["type2"] else None
+                    id=int(row.get("id", 0)),  # Use `.get()` to avoid KeyError
+                    name=row.get("name", "Unknown"),
+                    attack=int(row.get("attack", 0)),
+                    defense=int(row.get("defense", 0)),
+                    hp=int(row.get("hp", 0)),
+                    height=int(row.get("height", 0)),
+                    sp_attack=int(row.get("sp_attack", 0)),
+                    sp_defense=int(row.get("sp_defense", 0)),
+                    speed=int(row.get("speed", 0)),
+                    type1=row.get("type1", "Unknown"),
+                    type2=row.get("type2") if row.get("type2") else None
                 )
                 db.session.add(pokemon)
 
@@ -129,3 +136,6 @@ def release_pokemon():
     user.release_pokemon(pokemon_id, name)
 
     return jsonify({"message": "Pokemon released successfully"}), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
