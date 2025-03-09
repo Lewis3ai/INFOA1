@@ -1,0 +1,462 @@
+
+<!--
+Name:Nailah Lewis
+Student ID: 816042748
+Course: INFO 1601
+Teacher: Nicholas Mendez
+Lab Exam
+-->
+
+<!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    <meta name="description" content="Mock Exam Prep for INFO 1601 ">
+    <meta name="keywords" content="INFO 1601, UWI, Lab Exam">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Social Media Influence on Shopping</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+
+  <style>
+    *{
+        box-sizing: border-box;
+     }
+
+     body{
+        display: flex;
+        padding: 0;
+        margin: 0;
+        flex-direction: column;
+        gap: 10px;
+     }
+
+
+
+    .abovenav{
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;    
+        overflow: hidden;
+        background-color: #07575B;
+        width: 100%;
+        padding:10px; /*makes the cat twin header longer*/
+        }
+
+        /* Add a black background color to the top navigation bar */
+        .nav {
+          display: flex;
+          align-items: center;
+          justify-content: space-evenly;    
+          overflow: hidden;
+          background-color: #003B46;
+          width: 100%;
+    }
+
+    /* Style the links inside the navigation bar */
+    .nav a {
+      margin-left: 3%;
+      margin-top: 1%;
+      margin-bottom: 1%;
+      float: left;
+      display: block;
+      color: black;
+      text-align: center;
+      padding: 10px 70px;
+      text-decoration: none;
+      font-size: 17px;
+      display: flex;
+      flex-grow: 1;
+    }
+
+
+
+
+    /* Change the color of links on hover */
+    .nav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    main{
+      margin-right: auto;
+      margin-left: auto;
+      width: 95vw;
+      display: flex;
+      flex-grow: 10;
+      flex-direction: column;
+      gap: 5px;
+      display: flex; 
+    }
+
+    section{
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;     
+      justify-content: center;
+    }
+
+
+    .Webcard{
+      border-radius: 2px;
+      background-color: white;
+      font-size: 0.7em;
+      padding: 8px;
+      box-shadow: -11px 9px 5px -4px rgba(0,0,0,0.31);
+      border: 1px 
+    }
+
+    .Mobilecard{
+      border-radius: 2px;
+      background-color: white;
+      font-size: 0.7em;
+      padding: 8px;
+      box-shadow: -11px 9px 5px -4px rgba(0,0,0,0.31);
+      border: 1px 
+    }
+
+    .Gendercard{
+      border-radius: 2px;
+      background-color: white;
+      font-size: 0.7em;
+      padding: 8px;
+      box-shadow: -11px 9px 5px -4px rgba(0,0,0,0.31);
+      border: 1px 
+    }
+
+    .Universitycard{
+      border-radius: 2px;
+      background-color: white;
+      font-size: 0.7em;
+      padding: 8px;
+      box-shadow: -11px 9px 5px -4px rgba(0,0,0,0.31);
+      border: 1px 
+    }
+
+    table{
+      border-collapse: collapse; 
+      width: 60%;
+      align-items: center; /* Vertically center the flex items */
+      justify-content: center; /* Horizontally center the flex items */
+      margin: 20px auto; /* Center the card horizontally */
+      text-align: center; /* Align the text and image in the center */
+
+    }
+
+    thead, th{
+      background-color: black;
+      color: white;
+      font-weight: bold;
+      font-size: 1.5em;
+    }
+
+    td {
+      font-size: 1.5em;
+      text-align: center;
+    }
+
+    tr:nth-child(even){
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #ddd;
+    }
+
+    table img{
+      height: 100px;
+    }
+
+
+    .button {
+      margin-top: %;
+      position: relative;
+      background-color: #FF642F;
+      border: none;
+      font-size: 20px;
+      color: black;
+      padding: 14px 70px;
+      width: 200px;
+      text-align: center;
+      -webkit-transition-duration: 0.4s;
+      /* Safari */
+      transition-duration: 0.4s;
+      text-decoration: none;
+      overflow: hidden;
+      cursor: pointer;
+      font-family: monospace;
+    }
+
+    .button:after {
+      content: "";
+      background: #90EE90;
+      display: block;
+      position: absolute;
+      padding-top: 300%;
+      padding-left: 350%;
+      margin-left: -20px !important;
+      margin-top: 100%;
+      opacity: 0;
+      transition: all 0.8s
+    }
+
+    .button:active:after {
+      padding: 0;
+      margin: 0;
+      opacity: 1;
+      transition: 0s
+    }
+
+  </style>
+
+  </head>
+
+  <body>
+
+    <div class="abovenav">
+    <h1> Social Media Influence on Shopping</h1>
+    </div>
+
+    <nav>
+      <div class="nav">
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+      </div>
+    </nav>
+
+    
+    <main>
+
+      <section class="Webcard">
+        <button onclick="filterByAnswer('Instagram')">
+          Instagram
+        </button>
+
+        <button onclick="filterByAnswer('Facebook')">
+          Facebook
+        </button>
+
+        <button onclick="filterByAnswer('Twitter')">
+          Twitter
+        </button>
+        <button onclick="filterByAnswer('Snapchat')">
+          Snapchat
+        </button>
+      </section>
+      
+      <table class="Webcard">
+         <thead>
+            <tr>
+             <th>Segment Type</th>
+             <th>Segment Description</th>
+             <th>Answer</th>
+             <th>Count</th>
+              <th>Percentage</th>
+           </tr>
+         </thead>
+         <tbody id="result">
+         </tbody>
+       </table>
+
+      <section class="Mobilecard">
+        <button onclick="filterByAnswer('Instagram')">
+          Instagram
+        </button>
+
+        <button onclick="filterByAnswer('Facebook')">
+          Facebook
+        </button>
+
+        <button onclick="filterByAnswer('Twitter')">
+          Twitter
+        </button>
+        <button onclick="filterByAnswer('Snapchat')">
+          Snapchat
+        </button>
+      </section>
+      
+      <table class="Mobilecard">
+         <thead>
+            <tr>
+             <th>Segment Type</th>
+             <th>Segment Description</th>
+             <th>Answer</th>
+             <th>Count</th>
+              <th>Percentage</th>
+           </tr>
+         </thead>
+         <tbody id="result">
+         </tbody>
+       </table>
+
+      <table class="Gendercard">
+         <thead>
+            <tr>
+             <th>Segment Type</th>
+             <th>Segment Description</th>
+             <th>Answer</th>
+             <th>Count</th>
+              <th>Percentage</th>
+           </tr>
+         </thead>
+         <tbody id="result">
+         </tbody>
+       </table>
+
+      <table class="Universitycard">
+         <thead>
+            <tr>
+             <th>Segment Type</th>
+             <th>Segment Description</th>
+             <th>Answer</th>
+             <th>Count</th>
+              <th>Percentage</th>
+           </tr>
+         </thead>
+         <tbody id="result">
+         </tbody>
+       </table>
+    </main>
+
+  
+    <script>
+
+      function filterByAnswer(Answer){
+
+        let filtered = [];
+
+        //iterate the records in the global state
+        for(let rec of state){
+
+          //push only elements that match the given series
+          if (record.Answer === Answer)
+            filtered.push(record);
+        }
+        drawTable(filtered);
+      }
+      
+     /*Web table*/
+      async function drawTable(records) {
+        let html = '';
+        let result = document.querySelector('#result');
+
+        for (let record of records) { 
+          html += `<tr>
+             <td>${record['Segment Type']}</td>
+             <td>${record['Segment Description']}</td>
+             <td> ${record.Answer} </td>
+             <td>${record.Count}</td>
+             <td>${record.Percentage}</td>
+           </tr>`;
+        }
+        result.innerHTML = html;
+      }
+      async function getData() {
+        try {
+          const response = await fetch("https://weblabs.web.app/api/shopping/Web.json");
+          const data = await response.json();
+          drawTable(data);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+      getData();
+
+
+
+       /*Mobile table*/
+        async function drawTable(records) {
+          let html = '';
+          let result = document.querySelector('#result');
+
+          for (let record of records) { 
+            html += `<tr>
+               <td>${record['Segment Type']}</td>
+               <td>${record['Segment Description']}</td>
+               <td> ${record.Answer} </td>
+               <td>${record.Count}</td>
+               <td>${record.Percentage}</td>
+             </tr>`;
+          }
+          result.innerHTML = html;
+        }
+
+      async function getMobileData() {
+          try {
+            const response = await fetch("https://weblabs.web.app/api/shopping/Mobile.json");
+            const data = await response.json();
+            drawTable(data);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        }
+        getMobileData();
+
+
+
+
+      async function drawTable(records) {
+          let html = '';
+          let result = document.querySelector('#result');
+
+          for (let record of records) { 
+            html += `<tr>
+               <td>${record['Segment Type']}</td>
+               <td>${record['Segment Description']}</td>
+               <td> ${record.Answer} </td>
+               <td>${record.Count}</td>
+               <td>${record.Percentage}</td>
+             </tr>`;
+          }
+          result.innerHTML = html;
+        }
+
+      async function getGenderData() {
+          try {
+            const response = await fetch("https://weblabs.web.app/api/shopping/Gender.json");
+            const data = await response.json();
+            drawTable(data);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        }
+        getGenderData();
+
+
+      async function drawTable(records) {
+          let html = '';
+          let result = document.querySelector('#result');
+
+          for (let record of records) { 
+            html += `<tr>
+               <td>${record['Segment Type']}</td>
+               <td>${record['Segment Description']}</td>
+               <td> ${record.Answer} </td>
+               <td>${record.Count}</td>
+               <td>${record.Percentage}</td>
+             </tr>`;
+          }
+          result.innerHTML = html;
+        }
+
+      async function getEducationData() {
+          try {
+            const response = await fetch("https://weblabs.web.app/api/shopping/University.json");
+            const data = await response.json();
+            drawTable(data);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        }
+        getEducationData();
+  </script>
+
+    
+
+   
+</body>
+
+</html>
+
