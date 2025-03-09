@@ -1,32 +1,46 @@
-import csv
-from flask import Flask
-from models import db, Pokemon
+from flask import request, jsonify
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from models import User
 
-app = Flask(__name__)
+app.config["JWT_SECRET_KEY"] = "supersecretkey"
+jwt = JWTManager(app)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db.init_app(app)
+@app.route('/register', methods=['POST'])
+def register():
+    """Registers a new user."""
+    data = request.get_json()
+    username = data.get("username")
+    email = data.get("email")
+    password = data.get("password")
 
-def initialize_db():
-    with app.app_context():
-        db.create_all()
+    if not username or not email or not password:
+        return jsonify({"message": "Missing required fields"}), 400
 
-        # Read CSV and add Pokémon to the database
-        with open("pokemon.csv", "r") as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                name = row["name"]
-                type1 = row["type1"]
-                type2 = row["type2"] if row["type2"] else None  # Handle empty type2
+    if User.query.filter_by(username=username).first():
+        return jsonify({"message": "Username already exists"}), 400
 
-                if not Pokemon.query.filter_by(name=name).first():  # Avoid duplicates
-                    pokemon = Pokemon(name=name, type1=type1, type2=type2)
-                    db.session.add(pokemon)
+    user = User(username=username, email=email)
+    user.set_password(password)
 
-        db.session.commit()
-        print("Database Initialized Successfully!")
+    db.session.add(user)
+    db.session.commit()
 
-@app.cli.command("init")
-def init():
-    initialize_db()
+    return jsonify({"message": "User registered successfully"}), 201
+
+@app.route('/login', methods=['POST'])
+def login():
+    """Logs in a user and returns a JWT token."""
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    user = User.query.filter_by(username=username).first()
+
+    if not user or not user.check_password(password):
+        return jsonify({"message": "Invalid username or password"}), 401
+
+    access_token = create_access_token(identity=user.id)
+    response = jsonify({"message": "Login successful"})
+    response.set_cookie("access_token", access_token, httponly=True)
+
+    return response, 200
