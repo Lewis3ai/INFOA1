@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 import csv
@@ -15,6 +15,8 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     user_pokemon = db.relationship('UserPokemon', backref='owner', lazy=True)
+    password_hash = db.Column(db.String(200), nullable=False)
+
 
 class Pokemon(db.Model):
     id = db.Column(db.Integer, primary_key=True)

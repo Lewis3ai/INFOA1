@@ -35,18 +35,18 @@ class User(db.Model):
 
 
 # Pokemon Model
-class Pokemon(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    attack = db.Column(db.Integer, nullable=False)
-    defense = db.Column(db.Integer, nullable=False)
-    hp = db.Column(db.Integer, nullable=False)
-    height = db.Column(db.Integer, nullable=False)
-    sp_attack = db.Column(db.Integer, nullable=False)
-    sp_defense = db.Column(db.Integer, nullable=False)
-    speed = db.Column(db.Integer, nullable=False)
-    type1 = db.Column(db.String(20), nullable=False)
-    type2 = db.Column(db.String(20), nullable=True)
+    class Pokemon(db.Model):
+        id = db.Column(db.Integer, primary_key=True)
+        name = db.Column(db.String(50), nullable=False)
+        attack = db.Column(db.Integer, nullable=False)
+        defense = db.Column(db.Integer, nullable=False)
+        hp = db.Column(db.Integer, nullable=False)
+        height = db.Column(db.Float, nullable=False)
+        sp_attack = db.Column(db.Integer, nullable=False)
+        sp_defense = db.Column(db.Integer, nullable=False)
+        speed = db.Column(db.Integer, nullable=False)
+        type1 = db.Column(db.String(50), nullable=False)
+        type2 = db.Column(db.String(50), nullable=True)  # Nullable for single-type Pokemon
 
     trainer = db.relationship("UserPokemon", back_populates="pokemon")
 
