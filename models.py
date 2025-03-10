@@ -62,3 +62,17 @@ class User(db.Model):
         self.speed = speed
         self.type1 = type1
         self.type2 = type2
+
+
+# UserPokemon Model (Connecting User and Pokemon)
+class UserPokemon(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    pokemon_id = db.Column(db.Integer, db.ForeignKey('pokemon.id'), nullable=False)
+    name = db.Column(db.String(50), nullable=False)
+    trainer = db.relationship("User", back_populates="pokemon")
+    pokemon = db.relationship("Pokemon", back_populates="trainer")
+    def __init__(self, user_id, pokemon_id, name):
+        self.user_id = user_id
+        self.pokemon_id = pokemon_id
+        self.name = name
