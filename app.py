@@ -4,10 +4,11 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 import csv
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pokemon.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///yourdatabase.db'  
 app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change this in production
 
 db = SQLAlchemy(app)
+db.init_app(app)
 jwt = JWTManager(app)
 
 class User(db.Model):
