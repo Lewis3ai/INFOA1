@@ -1,141 +1,65 @@
-import csv
-import os
 from flask import Flask, jsonify, request
+from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from models import db, Pokemon, User, UserPokemon
+import csv
 
 app = Flask(__name__)
-
-# Configure the database URI
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pokemon.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config["JWT_SECRET_KEY"] = "supersecretkey"
+app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change this in production
+
+db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
-db.init_app(app)
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+    user_pokemon = db.relationship('UserPokemon', backref='owner', lazy=True)
 
-def initialize_db():
-    """Parses pokemon.csv and stores Pokémon in the database."""
-    with app.app_context():
-        db.drop_all()  # Reset the database each time
-        db.create_all()
+class Pokemon(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    type = db.Column(db.String(80), nullable=False)
 
-        # Read CSV file
-        csv_file_path = os.path.join(os.path.dirname(__file__), "pokemon.csv")
-        with open(csv_file_path, newline='', encoding="utf-8") as csvfile:
-            reader = csv.DictReader(csvfile)
+class UserPokemon(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    pokemon_id = db.Column(db.Integer, db.ForeignKey('pokemon.id'), nullable=False)
+    name = db.Column(db.String(80), nullable=False)
 
-            for row in reader:
-                if "id" not in row or not row["id"].isdigit():
-                    continue  # Skip invalid rows
-
-                pokemon = Pokemon(
-                    id=int(row["id"]),
-                    name=row.get("name", "Unknown"),
-                    attack=int(row.get("attack", 0)),
-                    defense=int(row.get("defense", 0)),
-                    hp=int(row.get("hp", 0)),
-                    height=int(row.get("height", 0)),
-                    sp_attack=int(row.get("sp_attack", 0)),
-                    sp_defense=int(row.get("sp_defense", 0)),
-                    speed=int(row.get("speed", 0)),
-                    type1=row.get("type1", "Unknown"),
-                    type2=row.get("type2") if row.get("type2") else None
-                )
-                db.session.add(pokemon)
-
-        db.session.commit()
-
-@app.route('/init', methods=['GET'])
-def init():
-    """Route to initialize the database."""
-    initialize_db()
-    return jsonify({"message": "Database initialized successfully"}), 200
-
-@app.route('/register', methods=['POST'])
-def register():
-    """Registers a new user."""
+@app.route('/mypokemon/', methods=['PUT'])
+@jwt_required()
+def update_pokemon():
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "Invalid JSON body"}), 400  # Handle missing JSON
+    user_id = get_jwt_identity()
+    user_pokemon = UserPokemon.query.filter_by(id=data.get('id'), user_id=user_id).first()
 
-    username = data.get("username")
-    email = data.get("email")
-    password = data.get("password")
+    if not user_pokemon:
+        return jsonify({"error": f"Id {data.get('id')} is invalid or does not belong to {user_id}"}), 401
 
-    if not username or not email or not password:
-        return jsonify({"message": "Missing required fields"}), 400
-
-    if User.query.filter_by(username=username).first():
-        return jsonify({"message": "Username already exists"}), 400
-
-    user = User(username=username, email=email)
-    user.set_password(password)
-
-    db.session.add(user)
+    user_pokemon.name = data.get('name', user_pokemon.name)
     db.session.commit()
+    return jsonify({"message": f"{user_pokemon.name} updated successfully"})
 
-    return jsonify({"message": "User registered successfully"}), 201
-
-@app.route('/login', methods=['POST'])
-def login():
-    """Logs in a user and returns a JWT token."""
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "Invalid JSON body"}), 400  # Handle missing JSON
-
-    username = data.get("username")
-    password = data.get("password")
-
-    user = User.query.filter_by(username=username).first()
-
-    if not user or not user.check_password(password):
-        return jsonify({"message": "Invalid username or password"}), 401
-
-    access_token = create_access_token(identity=user.id)
-    response = jsonify({"message": "Login successful", "token": access_token})
-    response.set_cookie("access_token", access_token, httponly=True)
-
-    return response, 200
-
-
-@app.route('/catch', methods=['POST'])
+@app.route('/mypokemon/', methods=['DELETE'])
 @jwt_required()
-def catch_pokemon():
-    """Allows a user to catch a Pokemon."""
-    user_id = get_jwt_identity()
+def delete_pokemon():
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "Invalid JSON body"}), 400  # Handle missing JSON
-
-    pokemon_id = data.get("pokemon_id")
-    name = data.get("name")
-
-    user = User.query.get(user_id)
-    pokemon = Pokemon.query.get(pokemon_id)
-
-    if not pokemon:
-        return jsonify({"message": "Pokemon not found"}), 404
-
-    user.catch_pokemon(pokemon_id, name)
-    return jsonify({"message": "Pokemon caught successfully"}), 200
-
-@app.route('/release', methods=['POST'])
-@jwt_required()
-def release_pokemon():
-    """Allows a user to release a Pokemon."""
     user_id = get_jwt_identity()
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "Invalid JSON body"}), 400  # Handle missing JSON
+    user_pokemon = UserPokemon.query.filter_by(id=data.get('id'), user_id=user_id).first()
 
-    pokemon_id = data.get("pokemon_id")
-    name = data.get("name")
+    if not user_pokemon:
+        return jsonify({"error": f"Id {data.get('id')} is invalid or does not belong to {user_id}"}), 401
 
-    user = User.query.get(user_id)
-    user.release_pokemon(pokemon_id, name)
+    db.session.delete(user_pokemon)
+    db.session.commit()
+    return jsonify({"message": f"{user_pokemon.name} released"})
 
-    return jsonify({"message": "Pokemon released successfully"}), 200
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
+
 
 if __name__ == '__main__':
      app.run(host='0.0.0.0', port=8080, debug=True)
