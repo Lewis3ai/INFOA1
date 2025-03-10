@@ -33,13 +33,6 @@ class User(db.Model):
             db.session.delete(pokemon)
             db.session.commit()
 
-    def rename_pokemon(self, pokemon_id, name):
-        """Renames a captured Pokemon."""
-        pokemon = UserPokemon.query.filter_by(user_id=self.id, pokemon_id=pokemon_id).first()
-        if pokemon:
-            pokemon.name = name
-            db.session.commit()
-
 
 # Pokemon Model
 class Pokemon(db.Model):
@@ -56,39 +49,3 @@ class Pokemon(db.Model):
     type2 = db.Column(db.String(20), nullable=True)
 
     trainer = db.relationship("UserPokemon", back_populates="pokemon")
-
-    def get_json(self):
-        """Returns the Pokemon details as a JSON dictionary."""
-        return {
-            "id": self.id,
-            "name": self.name,
-            "attack": self.attack,
-            "defense": self.defense,
-            "hp": self.hp,
-            "height": self.height,
-            "sp_attack": self.sp_attack,
-            "sp_defense": self.sp_defense,
-            "speed": self.speed,
-            "type1": self.type1,
-            "type2": self.type2
-        }
-
-
-# UserPokemon Model (Many-to-Many Relationship)
-class UserPokemon(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    pokemon_id = db.Column(db.Integer, db.ForeignKey("pokemon.id"), nullable=False)
-    name = db.Column(db.String(50), nullable=False)  # Allows custom naming of Pokémon
-
-    trainer = db.relationship("User", back_populates="pokemon")
-    pokemon = db.relationship("Pokemon", back_populates="trainer")
-
-    def get_json(self):
-        """Returns user-owned Pokemon details as a JSON dictionary."""
-        return {
-            "id": self.id,
-            "user_id": self.user_id,
-            "pokemon_id": self.pokemon_id,
-            "name": self.name
-        }

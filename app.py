@@ -1,6 +1,6 @@
 import csv
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from models import db, Pokemon, User, UserPokemon
 
@@ -26,14 +26,11 @@ def initialize_db():
             reader = csv.DictReader(csvfile)
 
             for row in reader:
-                print("Row data:", row)  # Debugging line
-                
-                if "id" not in row:
-                    print("ERROR: 'id' key is missing from the CSV row:", row)
-                    continue  # Skip this row if "id" is missing
+                if "id" not in row or not row["id"].isdigit():
+                    continue  # Skip invalid rows
 
                 pokemon = Pokemon(
-                    id=int(row.get("id", 0)),  # Use `.get()` to avoid KeyError
+                    id=int(row["id"]),
                     name=row.get("name", "Unknown"),
                     attack=int(row.get("attack", 0)),
                     defense=int(row.get("defense", 0)),
@@ -54,12 +51,6 @@ def init():
     """Route to initialize the database."""
     initialize_db()
     return jsonify({"message": "Database initialized successfully"}), 200
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
-
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -96,12 +87,10 @@ def login():
         return jsonify({"message": "Invalid username or password"}), 401
 
     access_token = create_access_token(identity=user.id)
-    response = jsonify({"message": "Login successful"})
+    response = jsonify({"message": "Login successful", "token": access_token})
     response.set_cookie("access_token", access_token, httponly=True)
 
     return response, 200
-
-
 
 @app.route('/catch', methods=['POST'])
 @jwt_required()
@@ -138,4 +127,4 @@ def release_pokemon():
     return jsonify({"message": "Pokemon released successfully"}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8080, debug=True)
