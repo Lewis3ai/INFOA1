@@ -3,6 +3,21 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
+
+# UserPokemon Model (Connecting User and Pokemon)
+class UserPokemon(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    pokemon_id = db.Column(db.Integer, db.ForeignKey('pokemon.id'), nullable=False)
+    name = db.Column(db.String(50), nullable=False)
+    trainer = db.relationship("User", back_populates="pokemon")
+    pokemon = db.relationship("Pokemon", back_populates="trainer")
+    def __init__(self, user_id, pokemon_id, name):
+        self.user_id = user_id
+        self.pokemon_id = pokemon_id
+        self.name = name
+
+
 # User Model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -41,7 +56,8 @@ class User(db.Model):
         attack = db.Column(db.Integer, nullable=False)
         defense = db.Column(db.Integer, nullable=False)
         hp = db.Column(db.Integer, nullable=False)
-        height = db.Column(db.Float, nullable=False)
+        height = db.Column(db.Float, nullable=True)
+        weight = db.Column(db.Float, nullable=True)
         sp_attack = db.Column(db.Integer, nullable=False)
         sp_defense = db.Column(db.Integer, nullable=False)
         speed = db.Column(db.Integer, nullable=False)
@@ -50,13 +66,14 @@ class User(db.Model):
 
     trainer = db.relationship("UserPokemon", back_populates="pokemon")
 
-    def __init__(self, id, name, attack, defense, hp, height, sp_attack, sp_defense, speed, type1, type2=None):
+    def __init__(self, id, name, attack, defense, hp, height, weight, sp_attack, sp_defense, speed, type1, type2=None):
         self.id = id
         self.name = name
         self.attack = attack
         self.defense = defense
         self.hp = hp
         self.height = height
+        self.weight = weight
         self.sp_attack = sp_attack
         self.sp_defense = sp_defense
         self.speed = speed
@@ -64,15 +81,3 @@ class User(db.Model):
         self.type2 = type2
 
 
-# UserPokemon Model (Connecting User and Pokemon)
-class UserPokemon(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    pokemon_id = db.Column(db.Integer, db.ForeignKey('pokemon.id'), nullable=False)
-    name = db.Column(db.String(50), nullable=False)
-    trainer = db.relationship("User", back_populates="pokemon")
-    pokemon = db.relationship("Pokemon", back_populates="trainer")
-    def __init__(self, user_id, pokemon_id, name):
-        self.user_id = user_id
-        self.pokemon_id = pokemon_id
-        self.name = name
