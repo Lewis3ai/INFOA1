@@ -1,8 +1,8 @@
 import click
 import csv
 from tabulate import tabulate
-from models import db, User, Pokemon, UserPokemon
-from app import app
+from App import db, User, Pokemon, UserPokemon
+from App import app
 
 
 
