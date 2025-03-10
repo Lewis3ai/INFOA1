@@ -52,8 +52,6 @@ def initialize_db():
 app.cli.add_command(initialize_db)
 
 
-
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -72,6 +70,14 @@ class UserPokemon(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     pokemon_id = db.Column(db.Integer, db.ForeignKey('pokemon.id'), nullable=False)
     name = db.Column(db.String(80), nullable=False)
+
+
+# ********** Routes **************
+@app.route('/')
+def index():
+  return '<h1>Poke API v1.0</h1>'
+
+
 
 @app.route('/mypokemon/', methods=['PUT'])
 @jwt_required()
@@ -101,14 +107,9 @@ def delete_pokemon():
     db.session.commit()
     return jsonify({"message": f"{user_pokemon.name} released"})
 
-
-@app.route('/')
-def index():
-    response_text = "<h1>Poke API v1.0</h1>"
-    print(f"Returning response: {response_text}")  # Logs the response to the terminal
-    return response_text
-
-
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify({"error": "An unexpected error occurred"}), 500
 
 
 if __name__ == '__main__':
