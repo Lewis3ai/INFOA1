@@ -61,7 +61,10 @@ def delete_pokemon():
 
 @app.route('/')
 def index():
-    return "<h1>Poke API v1.0</h1>"
+    response_text = "<h1>Poke API v1.0</h1>"
+    print(f"Returning response: {response_text}")  # Logs the response to the terminal
+    return response_text
+
 
 
 
