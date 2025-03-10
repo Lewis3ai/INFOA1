@@ -61,7 +61,7 @@ def delete_pokemon():
 
 @app.route('/')
 def index():
-    return jsonify({"message": "Welcome to the Pokemon API!"})
+    return "<h1>Poke API v1.0</h1>"
 
 
 
