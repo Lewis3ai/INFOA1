@@ -49,3 +49,16 @@ class Pokemon(db.Model):
     type2 = db.Column(db.String(20), nullable=True)
 
     trainer = db.relationship("UserPokemon", back_populates="pokemon")
+
+    def __init__(self, id, name, attack, defense, hp, height, sp_attack, sp_defense, speed, type1, type2=None):
+        self.id = id
+        self.name = name
+        self.attack = attack
+        self.defense = defense
+        self.hp = hp
+        self.height = height
+        self.sp_attack = sp_attack
+        self.sp_defense = sp_defense
+        self.speed = speed
+        self.type1 = type1
+        self.type2 = type2

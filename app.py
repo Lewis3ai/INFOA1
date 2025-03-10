@@ -56,6 +56,9 @@ def init():
 def register():
     """Registers a new user."""
     data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid JSON body"}), 400  # Handle missing JSON
+
     username = data.get("username")
     email = data.get("email")
     password = data.get("password")
@@ -78,6 +81,9 @@ def register():
 def login():
     """Logs in a user and returns a JWT token."""
     data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid JSON body"}), 400  # Handle missing JSON
+
     username = data.get("username")
     password = data.get("password")
 
@@ -92,12 +98,15 @@ def login():
 
     return response, 200
 
+
 @app.route('/catch', methods=['POST'])
 @jwt_required()
 def catch_pokemon():
     """Allows a user to catch a Pokemon."""
     user_id = get_jwt_identity()
     data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid JSON body"}), 400  # Handle missing JSON
 
     pokemon_id = data.get("pokemon_id")
     name = data.get("name")
@@ -117,6 +126,8 @@ def release_pokemon():
     """Allows a user to release a Pokemon."""
     user_id = get_jwt_identity()
     data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid JSON body"}), 400  # Handle missing JSON
 
     pokemon_id = data.get("pokemon_id")
     name = data.get("name")
@@ -127,4 +138,4 @@ def release_pokemon():
     return jsonify({"message": "Pokemon released successfully"}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+     app.run(host='0.0.0.0', port=8080, debug=True)
